@@ -38,3 +38,4 @@ board = [
 
 the pygame library is used for the visualisation of the back-tracking alogorithm
 
+![](images/sudoku%20solver%20demo.png)
