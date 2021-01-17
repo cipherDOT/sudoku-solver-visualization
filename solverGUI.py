@@ -1,4 +1,14 @@
 
+# todo
+# [ ] what the hell is happening with cell (1, 4)
+# [ ] fix bugs like:
+#       - [ ] what the hell is happening with the cell (1, 4)
+#       - [ ] optimization ?!
+#       - [ ] structure the sboard and the grid!
+#       - [ ] find whether there is a bug in a possible() function
+# [ ] tweak the solve() function to work with user inputs, or find if tweaks are needed
+# [ ] write some cleaner code for god's sake!!!
+
 # -------------------------------------------------------imports------------------------------------------------------------ #
 
 import pygame
@@ -18,15 +28,15 @@ pygame.display.set_caption('Sudoku solver')
 font = pygame.font.SysFont("comicsans", 25)
 
 board = [
-    [3, 0, 6, 5, 0, 8, 4, 0, 0],
-    [5, 2, 0, 0, 0, 0, 0, 0, 0],
-    [0, 8, 7, 0, 0, 0, 0, 3, 1],
-    [0, 0, 3, 0, 1, 0, 0, 8, 0],
-    [9, 0, 0, 8, 6, 3, 0, 0, 5],
-    [0, 5, 0, 0, 9, 0, 6, 0, 0],
-    [1, 3, 0, 0, 0, 0, 2, 5, 0],
-    [0, 0, 0, 0, 0, 0, 0, 7, 4],
-    [0, 0, 5, 2, 0, 6, 3, 0, 0]
+    [5, 0, 1, 0, 6, 0, 0, 2, 4],
+    [0, 6, 0, 4, 0, 0, 0, 7, 3],
+    [0, 7, 0, 0, 0, 0, 1, 0, 5],
+    [0, 0, 0, 0, 0, 7, 2, 0, 8],
+    [8, 0, 2, 3, 9, 0, 5, 4, 7],
+    [3, 0, 0, 2, 8, 4, 0, 9, 0],
+    [0, 0, 5, 6, 0, 0, 4, 0, 0],
+    [0, 2, 0, 0, 0, 0, 3, 1, 0],
+    [9, 4, 6, 0, 0, 1, 7, 0, 0]
 ]
 
 # -----------------------------------------------------Cell class----------------------------------------------------------- #
@@ -37,7 +47,7 @@ class Cell(object):
         self.x = x
         self.y = y
         self.value = 0
-        self.solved = False
+        self.mutable = True
 
     def draw(self):
         rect(display, (black), (self.x, self.y, rez, rez))
@@ -56,6 +66,7 @@ class Board(object):
             for j in range(9):
                 self.grid[i].append(Cell(i * rez, j * rez))
                 self.grid[i][j].value = board[j][i]
+                self.grid[i][j].mutable = (self.grid[i][j].value == 0)
 
     def draw(self):
         for row in self.grid:
@@ -85,9 +96,11 @@ def draw_grid():
         line(display, (white), (0, j), (width, j), thick)
 
 
-def draw(b):
+def draw(b, s):
     b.draw()
     draw_grid()
+    if s != None:
+        rect(display, (white), (s.x, s.y, rez, rez), 3)
     pygame.display.flip()
 
 # ---------------------------------------------------solver functions--------------------------------------------------------- #
@@ -143,7 +156,7 @@ def solve(board):
         quit()
     for y in range(9):
         for x in range(9):
-            draw(board)
+            draw(board, None)
             if board.grid[y][x].value == 0:
                 for n in range(1, 10):
                     if possible(board.grid, y, x, n):
@@ -158,22 +171,100 @@ def solve(board):
 def main():
     run = True
     sboard = Board()
+    selected = None
 
     while run:
+        if selected != None:
+            pos = selected.x // rez, selected.y // rez
+        # ------------------------Event Handler----------------------------- #
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 quit()
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                (i, j) = pygame.mouse.get_pos()
+                i = i // rez
+                j = j // rez
+                selected = sboard.grid[i][j]
+
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                key = event.key
+                if key == pygame.K_SPACE:
                     solve(sboard)
 
-                if event.key == pygame.K_q:
+                if key == pygame.K_q:
                     run = False
                     quit()
 
-        draw(sboard)
+                if key == pygame.K_0:
+                    selected.value = 0
+
+                elif key == pygame.K_1:
+                    if possible(sboard.grid, pos[1], pos[0], 1):
+                        selected.value = 1
+                    else:
+                        print(
+                            f'error at cell {pos} for value 1')
+
+                elif key == pygame.K_2:
+                    if possible(sboard.grid, pos[1], pos[0], 2):
+                        selected.value = 2
+                    else:
+                        print(
+                            f'error at cell {pos} for value 2')
+
+                elif key == pygame.K_3:
+                    if possible(sboard.grid, pos[1], pos[0], 3):
+                        selected.value = 3
+                    else:
+                        print(
+                            f'error at cell {pos} for value 3')
+
+                elif key == pygame.K_4:
+                    if possible(sboard.grid, pos[1], pos[0], 4):
+                        selected.value = 4
+                    else:
+                        print(
+                            f'error at cell {pos} for value 4')
+
+                elif key == pygame.K_5:
+                    if possible(sboard.grid, pos[1], pos[0], 5):
+                        selected.value = 5
+                    else:
+                        print(
+                            f'error at cell {pos} for value 5')
+
+                elif key == pygame.K_6:
+                    if possible(sboard.grid, pos[1], pos[0], 6):
+                        selected.value = 6
+                    else:
+                        print(
+                            f'error at cell {pos} for value 6')
+
+                elif key == pygame.K_7:
+                    if possible(sboard.grid, pos[1], pos[0], 7):
+                        selected.value = 7
+                    else:
+                        print(
+                            f'error at cell {pos} for value 7')
+
+                elif key == pygame.K_8:
+                    if possible(sboard.grid, pos[1], pos[0], 8):
+                        selected.value = 8
+                    else:
+                        print(
+                            f'error at cell {pos} for value 8')
+
+                elif key == pygame.K_9:
+                    if possible(sboard.grid, pos[1], pos[0], 9):
+                        selected.value = 9
+                    else:
+                        print(
+                            f'error at cell {pos} for value 9')
+
+        # ------------------------Event Handler----------------------------- #
+        draw(sboard, selected)
 
 # -------------------------------------------------------------------------------------------------------------------------- #
 
