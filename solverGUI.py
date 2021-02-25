@@ -109,9 +109,11 @@ def draw(b, s):
 def possible(board, y, x, n):
     for i in range(len(board)):
         if board[y][i].value == n:
+            print(f'error for {n} at {y, x}')
             return False
     for j in range(len(board[0])):
         if board[j][x].value == n:
+            print(f'error for {n} at {y, x}')
             return False
 
     xoff = (x // 3) * 3
@@ -120,6 +122,8 @@ def possible(board, y, x, n):
     for i in range(0, 3):
         for j in range(0, 3):
             if board[yoff + i][xoff + j].value == n:
+                print(
+                    f'error for {n} due to cell mismatch at ({yoff + i},{xoff + j})')
                 return False
 
     return True
@@ -174,9 +178,12 @@ def main():
     selected = None
 
     while run:
+        # setting up the [ selected_pos ] variable.
         if selected != None:
-            pos = selected.x // rez, selected.y // rez
+            selected_pos = selected.x // rez, selected.y // rez
+
         # ------------------------Event Handler----------------------------- #
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -189,7 +196,9 @@ def main():
                 selected = sboard.grid[i][j]
 
             if event.type == pygame.KEYDOWN:
+                # setting key = event.key for convenience
                 key = event.key
+
                 if key == pygame.K_SPACE:
                     solve(sboard)
 
@@ -201,67 +210,40 @@ def main():
                     selected.value = 0
 
                 elif key == pygame.K_1:
-                    if possible(sboard.grid, pos[1], pos[0], 1):
+                    if possible(sboard.grid, selected_pos[1], selected_pos[0], 1):
                         selected.value = 1
-                    else:
-                        print(
-                            f'error at cell {pos} for value 1')
 
                 elif key == pygame.K_2:
-                    if possible(sboard.grid, pos[1], pos[0], 2):
+                    if possible(sboard.grid, selected_pos[1], selected_pos[0], 2):
                         selected.value = 2
-                    else:
-                        print(
-                            f'error at cell {pos} for value 2')
 
                 elif key == pygame.K_3:
-                    if possible(sboard.grid, pos[1], pos[0], 3):
+                    if possible(sboard.grid, selected_pos[1], selected_pos[0], 3):
                         selected.value = 3
-                    else:
-                        print(
-                            f'error at cell {pos} for value 3')
 
                 elif key == pygame.K_4:
-                    if possible(sboard.grid, pos[1], pos[0], 4):
+                    if possible(sboard.grid, selected_pos[1], selected_pos[0], 4):
                         selected.value = 4
-                    else:
-                        print(
-                            f'error at cell {pos} for value 4')
 
                 elif key == pygame.K_5:
-                    if possible(sboard.grid, pos[1], pos[0], 5):
+                    if possible(sboard.grid, selected_pos[1], selected_pos[0], 5):
                         selected.value = 5
-                    else:
-                        print(
-                            f'error at cell {pos} for value 5')
 
                 elif key == pygame.K_6:
-                    if possible(sboard.grid, pos[1], pos[0], 6):
+                    if possible(sboard.grid, selected_pos[1], selected_pos[0], 6):
                         selected.value = 6
-                    else:
-                        print(
-                            f'error at cell {pos} for value 6')
 
                 elif key == pygame.K_7:
-                    if possible(sboard.grid, pos[1], pos[0], 7):
+                    if possible(sboard.grid, selected_pos[1], selected_pos[0], 7):
                         selected.value = 7
-                    else:
-                        print(
-                            f'error at cell {pos} for value 7')
 
                 elif key == pygame.K_8:
-                    if possible(sboard.grid, pos[1], pos[0], 8):
+                    if possible(sboard.grid, selected_pos[1], selected_pos[0], 8):
                         selected.value = 8
-                    else:
-                        print(
-                            f'error at cell {pos} for value 8')
 
                 elif key == pygame.K_9:
-                    if possible(sboard.grid, pos[1], pos[0], 9):
+                    if possible(sboard.grid, selected_pos[1], selected_pos[0], 9):
                         selected.value = 9
-                    else:
-                        print(
-                            f'error at cell {pos} for value 9')
 
         # ------------------------Event Handler----------------------------- #
         draw(sboard, selected)
@@ -271,3 +253,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# else:
+#     print(
+#         f'error at cell {selected_pos} for value 7')
